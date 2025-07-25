@@ -463,31 +463,33 @@ D) 외부 데이터를 직접 참조하지 않는다
 
 <details>
 <summary>학습정리.md를 모두 제공하여 퀴즈를 받았을 때</summary>
+<div markdown="1">
 
-Q. Node.js의 이벤트 루프에서 실행 순서상 가장 먼저 실행되는 phase는 무엇인가?
+#### Q. Node.js의 이벤트 루프에서 실행 순서상 가장 먼저 실행되는 phase는 무엇인가?
 
 A. check
 B. poll
 ✅ C. timer
 D. close callbacks
 
-🧠 해설:
+**🧠 해설:**
 setTimeout, setInterval 등으로 등록된 콜백은 이벤트 루프의 timer phase에서 가장 먼저 실행됩니다. 단, 설정한 시간은 최소 대기 시간이므로 정확한 실행 시점은 보장되지 않으며, 앞선 phase의 작업에 의해 지연될 수 있습니다.
-
+</div>
 </details>
 
 <details>
 <summary>스스로 정리한 내용에 대해 심화 퀴즈를 받을 때</summary>
+<div markdown="1">
 
-Q. Node.js에서 fs.readFile()이 실행되면 내부적으로 어떤 구조에 의해 비동기로 처리되어 콜백이 이벤트 루프로 전달되는가?
+#### Q. Node.js에서 fs.readFile()이 실행되면 내부적으로 어떤 구조에 의해 비동기로 처리되어 콜백이 이벤트 루프로 전달되는가?
 
 A. V8 엔진의 Garbage Collector
 B. Worker Threads
 ✅ C. libuv의 I/O Watcher
 D. Web API
 
-🧠 해설:
+**🧠 해설:**
 fs.readFile()은 Node.js 내장 모듈로, libuv의 스레드풀에서 비동기로 처리됩니다. 작업 완료 후 libuv의 I/O Watcher가 이를 감지하고, 이벤트 루프의 I/O phase로 콜백을 전달합니다. 이 과정 덕분에 메인 스레드가 block되지 않고 효율적인 비동기 I/O 처리가 가능합니다.
-
+</div>
 </details>
 
