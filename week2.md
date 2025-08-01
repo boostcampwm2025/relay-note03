@@ -76,6 +76,88 @@ GPT는 코드 스타일, 성능, 가독성, 예외 처리 등 다양한 측면�
 
 - 맡은 사람 : J032\_김동균
 - 선정 이유 : 코드를 더욱 비판적으로 바라보는 능력을 기르고자 하며, AI와의 피드백 과정을 통해 사고의 폭을 넓히고 싶습니다.
+<detials>
+<summary>수행 내용</summary>
+```js
+import { EVENT_NAME, VIDEO_STATUS } from "./constants.js";
+import { eventBus } from "./eventBus.js";
+
+export class ConvertModule {
+  constructor(convertQueue, verifyQueue) {
+    this.convertQueue = convertQueue; // 변환 대기큐
+    this.verifyQueue = verifyQueue; // 검증 대기큐
+    this.current = null; // 현재 변환 중인 영상
+  }
+
+  /**
+   * 업로드 완료 시 변환 처리
+   */
+  start() {
+    eventBus.on(EVENT_NAME.VIDEO_UPLOADED, () => this.processNext());
+  }
+
+  /**
+   * 변환 대기큐에서 영상을 꺼내 변환을 수행하고 완료되면 검증 대기큐로 이동
+   */
+  processNext() {
+    if (this.current || this.convertQueue.isEmpty()) {
+      return;
+    }
+
+    const video = this.convertQueue.dequeue();
+
+    console.log(`${video.label} 변환 시작: ${video.id}`);
+    video.status = VIDEO_STATUS.CONVERTING;
+    this.current = video;
+
+    setTimeout(() => {
+      console.log(`${video.label} 변환 완료: ${video.id}`);
+      video.status = VIDEO_STATUS.VERIFYING;
+      this.verifyQueue.enqueue(video);
+      this.current = null;
+      eventBus.emit(EVENT_NAME.VIDEO_CONVERTED);
+      this.processNext();
+    }, video.convertTime);
+  }
+}
+
+이 코드가 읽기 좋은 코드라고 생각해?
+부족하다고 생각이 든다면 어떤 부분에서 어떻게 개선해보는게 좋다고 추천해줘.
+```
+이와 같은 코드를 넘겨주며 물어보았다. 과연 AI는 이 코드에 대해서 어떻게 생각할까?
+
+<br/>
+
+```js
+✅ 개선 포인트 요약
+✔ 상태 변경 로직 → 메서드화
+✔ 비동기 처리 → Promise로 관리
+✔ 조건식 & 플로우 → 의도를 드러내는 네이밍
+✔ 테스트 용이성 → delay() 추출 & await 기반
+```
+긴 내용에 대해서는 다 작성하기가 어려워서 마지막 요약 부분만 가져왔다. 꽤나 세부적으로 어떻게 구현해야할 지, 어떤 부분이 문제인지를 잘 잡아주었다. 보고나니 아하 어디서 더 개선하면 되겠구나 싶었다. 이를 종합해서 내 코드에 반영하려고 했다.
+
+<br />
+
+그런데 여기서 그치지말고 더 개선해볼 수 있을까? 궁금했다. 왜냐하면 AI가 주는 코드를 붙여넣기만 하는 것 같아서 다시 한번만 더 물어보고자 했다.
+
+```js
+더 개선할 부분 없어? 최선이야?
+```
+
+<br />
+
+돌아온 답변은 생각보다 쭈굴한 답변이었다. 그렇지 않다면서 새로운 코드를 작성해줬는데 다른 모듈들을 생각해보며, 추가적인 코드들을 제공했다. 신기했던 점은 따로 제공하지 않았던 미션의 모듈들과 비슷한 느낌이 있었다. 설계를 같이 했더라면 미션에서도 큰 힘이 되었을지도?
+
+<br />
+
+단지 문제점이 있었다면, 너무 세부적으로 나뉘었다는 부분도 있다. 콘솔로 출력하는 부분까지 나눌 필요가 있을까? 하는 부분이 있었다. 이런부분은 단순히 사용하기보다 비판적으로 바라보고 배제시켜야 한다고 생각이 든다.
+
+<br />
+
+결론적으로, 이번 릴레이 프로젝트에서 느낀 점은 AI를 단순히 활용만 하는 것이 아닌, 조금 더 생각해보고 더 요구를 하면 더 좋은 답변을 얻을 수 있다는 것을 깨달았다. 또한, 제공되는 코드를 단순히 사용하지 말고 더 생각해보자. 불필요한 부분도 있을 것이다. 어느정도 한다면, 설계 구축도 AI와 같이 잘 사용하면 좋을 것 같다는 생각이다. 대신, 이번 릴레이 미션처럼 분석하고 비판하는 사고를 가지고 참여해야겠지만.
+
+</details>
 
 ---
 
